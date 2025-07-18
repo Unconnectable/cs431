@@ -57,14 +57,15 @@ def replace_chinese_punctuation(file_path, total_char_counts):
             # Write only if content has changed
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(new_content)
-            status_message = f"成功替换 {file_modified_count} 个字符"
+            status_message = f"Sucessfully replace {file_modified_count} chars"
         else:
             status_message = "无字符需替换" # This status will typically not be shown in the tree view now
 
     except UnicodeDecodeError:
-        status_message = "跳过（非UTF-8编码或二进制文件）"
+        status_message = "skip (not UTF-8 decode or binary file)"
+        #status_message = "跳过（非UTF-8编码或二进制文件）"
     except Exception as e:
-        status_message = f"失败（错误：{e}）"
+        status_message = f"failure（ERROR：{e}）"
     
     return file_modified_count, status_message
 
@@ -111,7 +112,7 @@ def print_tree(tree, indent="", is_last=True, file_prefix='📄', dir_prefix='�
         else: # It's a file with its info (modified_count, status_message)
             modified_count, status_message = value
             if modified_count > 0:
-                print(f"{indent}{branch_symbol}📝 {key}：{status_message} （替换 {modified_count} 个字符）")
+                print(f"{indent}{branch_symbol}📝 {key}：{status_message} （tot {modified_count} chars）")
             else: # This branch covers files marked as "skipped (binary/non-UTF8)"
                 print(f"{indent}{branch_symbol}📄 {key}：{status_message}")
 
@@ -144,7 +145,7 @@ def main():
     # Aggregates total replacements for each type of Chinese character.
     total_char_replacement_summary = defaultdict(int)
 
-    print("⭕️⭕️⭕️ 开始文件处理 ⭕️⭕️⭕️")
+    print("⭕️⭕️⭕️ start ⭕️⭕️⭕️")
     print(" " * 20)
     
     # Traverse current directory and all subdirectories.
@@ -173,17 +174,17 @@ def main():
             # Files not in text_extensions are ignored and not stored.
 
     #print("-" * 20)
-    print("✅️✅️✅️ 处理结果详情 ✅️✅️✅️")
+    print("✅️✅️✅️ details ✅️✅️✅️")
     
     if not relevant_files_info:
-        print("未发现需要替换字符的文件或被标记的二进制文件。")
+        print("Not Found Files Replaceble")
     else:
         # Generate the tree structure from the relevant file paths
         tree_structure = generate_tree_structure(current_root_dir, relevant_files_info)
         print_tree(tree_structure)
 
     print(" " * 20 )
-    print("--- 字符替换总览 ---")
+    print("--- Tot Counts ---")
     
     # Output total replacement count for each character type.
     if total_char_replacement_summary:
@@ -202,12 +203,12 @@ def main():
         for char in ordered_chars:
             if char in total_char_replacement_summary:
                 count = total_char_replacement_summary[char]
-                print(f"'{char}' -> '{output_replacements[char]}' 共替换 {count} 个")
+                print(f"'{char}' -> '{output_replacements[char]}' tot {count} chars")
     else:
-        print("没有中文字符被替换。")
+        print("No CN chars to be replaced")
 
     print(" " * 20)
-    print("--- 处理完成 ---")
+    print("⭕️⭕️⭕️ finish ⭕️⭕️⭕️")
 
 if __name__ == "__main__":
     main()
