@@ -1,6 +1,22 @@
 import os
 from collections import defaultdict
 
+def prompt():
+    '''
+    
+    markdown修正提示词:
+    我会给出我的markdown笔记 你需要做以下的任务
+    1. 对我的内容进行适当的补充和添加,保证内容的完整性和不改变原有的意思,需要适当添加内容,但是不要过于详细,帮我补充一部分就好
+    2.帮我排版内容 运用适当的段落块和标题 让内容看上去更加的合理和清晰
+    3. 把里面的专有名词和文本出现的代码使用合适的格式包包裹 诸如 对code进行讲解的时候出现了某个变量或者函数 你需要把 他用``这样进行包裹
+    4. 给出一个markdown格式的code block 而不是给我渲染后的内容 这样我方便复制  
+    like如下
+    ```markdown
+    //这是你修正后的笔记内容
+    ```
+
+    '''
+
 def replace_chinese_punctuation(file_path, total_char_counts):
     """
     替换文件中的中文字符为英文字符，并统计字符修改数量。
