@@ -36,6 +36,19 @@ impl<K: Eq + Hash + Clone, V: Clone> Cache<K, V> {
     ///
     /// [`Entry`]: https://doc.rust-lang.org/stable/std/collections/hash_map/struct.HashMap.html#method.entry
     pub fn get_or_insert_with<F: FnOnce(K) -> V>(&self, key: K, f: F) -> V {
-        todo!()
+        //todo!()
+        // 1. acquire 获取锁
+        // 尝试获取 self.inner (Mutex<HashMap<K, V>>) 的锁
+        // lock尝试获取锁 unwrap 返回一个Result包裹的类型,成功则会返回一个Ok(HashMap<K, V>)的引用
+        let mut map = self.inner.lock().unwrap();
+        if let Some(value) = map.get(&key) {
+            value.clone()
+        } else {
+            let new_value = f(key.clone());
+            map.insert(key.clone(), new_value.clone());
+            new_value
+        }
+        // 完成后 自动 release锁
     }
+
 }
